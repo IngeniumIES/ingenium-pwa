@@ -57,16 +57,38 @@
     <label>Temperature: <span id="temp">--</span> °C</label>
   </div>
 
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
   <script>
+    const client = mqtt.connect("wss://0c500d6476cd4a58970e05e095c4bfaf.s1.eu.hivemq.cloud", {
+      username: "ingenium",
+      password: "IngsubpubEsp_32"
+    });
+  
+    client.on("connect", () => {
+      console.log("✅ Connected to HiveMQ MQTT broker");
+    });
+  
     function sendCommand(cmd) {
-      console.log("Send:", cmd);
-      // Integrate Web Serial / WebSocket here
+      if (cmd === "ON" || cmd === "OFF") {
+        client.publish("ingenium/light", cmd);
+      } else if (cmd.startsWith("BRIGHT:")) {
+        const value = cmd.split(":")[1];
+        client.publish("ingenium/brightness", value);
+      } else if (cmd.startsWith("COLOR:")) {
+        const color = cmd.split(":")[1];
+        client.publish("ingenium/color", color); // Optional if you handle RGB
+      }
     }
-
-    // Simulated temperature update
-    setInterval(() => {
-      document.getElementById('temp').textContent = (20 + Math.random() * 5).toFixed(1);
-    }, 3000);
+  
+    client.on("message", (topic, message) => {
+      if (topic === "ingenium/temp") {
+        document.getElementById("temp").textContent = message.toString();
+      }
+    });
+  
+    // Optional: subscribe to temperature updates
+    client.subscribe("ingenium/temp");
   </script>
+  
 </body>
 </html>
