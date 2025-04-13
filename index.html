@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#002b36" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <title>Ingenium Control</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      text-align: center;
+      margin: 0;
+      padding: 2rem;
+    }
+    .logo {
+      max-width: 200px;
+      margin-bottom: 1rem;
+    }
+    .control {
+      margin: 1.5rem auto;
+      max-width: 300px;
+    }
+    input[type="range"] {
+      width: 100%;
+    }
+    .color-input {
+      height: 40px;
+      width: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <img src="icons/icon-192.png" alt="Ingenium Logo" class="logo" />
+  <h1>Ingenium Control</h1>
+
+  <div class="control">
+    <button onclick="sendCommand('ON')">Turn Light On</button>
+    <button onclick="sendCommand('OFF')">Turn Light Off</button>
+  </div>
+
+  <div class="control">
+    <label>Brightness</label>
+    <input type="range" min="0" max="100" onchange="sendCommand('BRIGHT:' + this.value)" />
+  </div>
+
+  <div class="control">
+    <label>Colour</label>
+    <input type="color" class="color-input" onchange="sendCommand('COLOR:' + this.value)" />
+  </div>
+
+  <div class="control">
+    <label>Temperature: <span id="temp">--</span> °C</label>
+  </div>
+
+  <script>
+    function sendCommand(cmd) {
+      console.log("Send:", cmd);
+      // Integrate Web Serial / WebSocket here
+    }
+
+    // Simulated temperature update
+    setInterval(() => {
+      document.getElementById('temp').textContent = (20 + Math.random() * 5).toFixed(1);
+    }, 3000);
+  </script>
+</body>
+</html>
